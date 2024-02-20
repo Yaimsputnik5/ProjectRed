@@ -3,7 +3,7 @@ package mrtjp.projectred.illumination.data;
 import codechicken.lib.datagen.ItemModelProvider;
 import mrtjp.projectred.illumination.BlockLightType;
 import mrtjp.projectred.illumination.MultipartLightType;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -11,8 +11,8 @@ import static mrtjp.projectred.illumination.ProjectRedIllumination.MOD_ID;
 
 public class IlluminationItemModelProvider extends ItemModelProvider {
 
-    public IlluminationItemModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, MOD_ID, existingFileHelper);
+    public IlluminationItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, MOD_ID, existingFileHelper);
     }
 
     @Override

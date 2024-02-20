@@ -2,12 +2,12 @@ package mrtjp.projectred.illumination.data;
 
 import codechicken.lib.datagen.LootTableProvider;
 import mrtjp.projectred.illumination.BlockLightType;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 
 public class IlluminationBlockLootProvider extends LootTableProvider.BlockLootProvider {
 
-    public IlluminationBlockLootProvider(DataGenerator dataGenerator) {
-        super(dataGenerator);
+    public IlluminationBlockLootProvider(PackOutput output) {
+        super(output);
     }
 
     @Override

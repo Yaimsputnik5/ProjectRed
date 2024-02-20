@@ -1,7 +1,7 @@
 package mrtjp.projectred.exploration.data;
 
 import codechicken.lib.datagen.LootTableProvider;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 
 import static mrtjp.projectred.core.init.CoreItems.*;
 import static mrtjp.projectred.exploration.init.ExplorationBlocks.*;
@@ -10,8 +10,8 @@ import static mrtjp.projectred.exploration.init.ExplorationItems.RAW_TIN_ITEM;
 
 public class ExplorationLootTableProvider extends LootTableProvider.BlockLootProvider {
 
-    public ExplorationLootTableProvider(DataGenerator dataGenerator) {
-        super(dataGenerator);
+    public ExplorationLootTableProvider(PackOutput output) {
+        super(output);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package mrtjp.projectred.expansion.data;
 
 import codechicken.lib.datagen.recipe.RecipeProvider;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -16,8 +16,8 @@ import static net.minecraftforge.common.Tags.Items.INGOTS_COPPER;
 
 public class ExpansionRecipeProvider extends RecipeProvider {
 
-    public ExpansionRecipeProvider(DataGenerator generatorIn) {
-        super(generatorIn);
+    public ExpansionRecipeProvider(PackOutput output) {
+        super(output);
     }
 
     @Override

@@ -6,7 +6,7 @@ import codechicken.microblock.api.BlockMicroMaterial;
 import codechicken.microblock.init.CBMicroblockModContent;
 import codechicken.microblock.item.ItemMicroBlock;
 import codechicken.microblock.util.MicroMaterialRegistry;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -22,8 +22,8 @@ import static net.minecraftforge.common.Tags.Items.*;
 
 public class CoreRecipeProvider extends RecipeProvider {
 
-    public CoreRecipeProvider(DataGenerator gen) {
-        super(gen);
+    public CoreRecipeProvider(PackOutput output) {
+        super(output);
     }
 
     @Override

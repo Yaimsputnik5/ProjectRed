@@ -36,7 +36,7 @@ public class FabricatedGatePart extends BundledGatePart {
     public void preparePlacement(@Nullable Player player, BlockPos pos, int side) {
         super.preparePlacement(player, pos, side);
 
-        if (player == null || player.level.isClientSide) return;
+        if (player == null || player.level().isClientSide) return;
 
         ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND); // TODO handle offhand
         if (stack.isEmpty() || !stack.hasTag()) {

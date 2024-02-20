@@ -1,0 +1,13 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": [
+    "projectred_exploration:ruby_ore",
+    "projectred_exploration:sapphire_ore",
+    "projectred_exploration:peridot_ore",
+    "projectred_exploration:electrotine_ore",
+    "projectred_exploration:tin_ore",
+    "projectred_exploration:silver_ore"
+  ],
+  "step": "underground_ores"
+}

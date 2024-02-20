@@ -3,7 +3,7 @@ package mrtjp.projectred.illumination.data;
 import mrtjp.projectred.illumination.BlockLightType;
 import mrtjp.projectred.illumination.ProjectRedIllumination;
 import mrtjp.projectred.illumination.block.IllumarLampBlock;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
@@ -14,8 +14,8 @@ import javax.annotation.Nonnull;
 
 public class IlluminationBlockStateModelProvider extends BlockStateProvider {
 
-    public IlluminationBlockStateModelProvider(DataGenerator gen, ExistingFileHelper exFileHelper) {
-        super(gen, ProjectRedIllumination.MOD_ID, exFileHelper);
+    public IlluminationBlockStateModelProvider(PackOutput output, ExistingFileHelper exFileHelper) {
+        super(output, ProjectRedIllumination.MOD_ID, exFileHelper);
     }
 
     @Override

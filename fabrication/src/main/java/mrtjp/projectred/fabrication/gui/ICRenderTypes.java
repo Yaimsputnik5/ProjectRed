@@ -2,23 +2,26 @@ package mrtjp.projectred.fabrication.gui;
 
 import codechicken.lib.render.BlockRenderer;
 import codechicken.lib.render.CCRenderState;
-import codechicken.lib.texture.AtlasRegistrar;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.event.TextureStitchEvent;
+import org.joml.Matrix4f;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.OptionalDouble;
 
 import static mrtjp.projectred.fabrication.ProjectRedFabrication.MOD_ID;
@@ -64,12 +67,12 @@ public class ICRenderTypes {
 
     public static RenderType gridRenderType = RenderType.create(MOD_ID + ":ic_grid", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 256, false, false,
             RenderType.CompositeState.builder()
-                    .setShaderState(RenderStateShard.BLOCK_SHADER)
+                    .setShaderState(RenderStateShard.RENDERTYPE_CUTOUT_SHADER)
                     .setTextureState(new RenderStateShard.TextureStateShard(PERFBOARD_TEXTURE, false, false)) // Mipped: Strange artifacts on render. Our normal world rendering is not mipped
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                     .setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
                     .setCullState(RenderStateShard.CULL)
-                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
+                    .setLightmapState(RenderStateShard.LIGHTMAP)
                     .setOverlayState(RenderStateShard.NO_OVERLAY)
                     .setLayeringState(RenderStateShard.NO_LAYERING)
                     .setOutputState(RenderStateShard.MAIN_TARGET)
@@ -80,12 +83,12 @@ public class ICRenderTypes {
 
     public static RenderType gridEdgeRenderType = RenderType.create(MOD_ID + ":ic_grid_edge", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 256, false, false,
             RenderType.CompositeState.builder()
-                    .setShaderState(RenderStateShard.BLOCK_SHADER)
+                    .setShaderState(RenderStateShard.RENDERTYPE_CUTOUT_SHADER)
                     .setTextureState(new RenderStateShard.TextureStateShard(PERFBOARD_EDGE_TEXTURE, false, false))
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                     .setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
                     .setCullState(RenderStateShard.CULL)
-                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
+                    .setLightmapState(RenderStateShard.LIGHTMAP)
                     .setOverlayState(RenderStateShard.NO_OVERLAY)
                     .setLayeringState(RenderStateShard.NO_LAYERING)
                     .setOutputState(RenderStateShard.MAIN_TARGET)
@@ -96,12 +99,12 @@ public class ICRenderTypes {
 
     public static RenderType gridCornerRenderType = RenderType.create(MOD_ID + ":ic_grid_corner", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 256, false, false,
             RenderType.CompositeState.builder()
-                    .setShaderState(RenderStateShard.BLOCK_SHADER)
+                    .setShaderState(RenderStateShard.RENDERTYPE_CUTOUT_SHADER)
                     .setTextureState(new RenderStateShard.TextureStateShard(PERFBOARD_CORNER_TEXTURE, false, false))
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                     .setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
                     .setCullState(RenderStateShard.CULL)
-                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
+                    .setLightmapState(RenderStateShard.LIGHTMAP)
                     .setOverlayState(RenderStateShard.NO_OVERLAY)
                     .setLayeringState(RenderStateShard.NO_LAYERING)
                     .setOutputState(RenderStateShard.MAIN_TARGET)
@@ -131,6 +134,7 @@ public class ICRenderTypes {
     public static TextureAtlasSprite icSurfaceCornerIcon;
 
     public static void renderICGrid(PoseStack renderStack, MultiBufferSource getter, Cuboid6 bounds, CCRenderState ccrs) {
+
         // Main
         double ymin = -2/16D;
         Cuboid6 box = new Cuboid6(bounds.min.x, ymin, bounds.min.z, bounds.max.x, 0, bounds.max.z);
@@ -265,9 +269,11 @@ public class ICRenderTypes {
 
         stack.translate(pos.x, pos.y, pos.z);
         stack.scale(1.0f/fontRenderer.lineHeight, 1, 1.0f/fontRenderer.lineHeight);
-        stack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+        stack.mulPose(Axis.XP.rotationDegrees(90f));
 
-        fontRenderer.draw(stack, text, (float) (-fontRenderer.width(text) / 2), (float) (-fontRenderer.lineHeight / 2), textColor);
+        MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
+        fontRenderer.drawInBatch(text, (float) (-fontRenderer.width(text) / 2), (float) (-fontRenderer.lineHeight / 2), textColor, false, stack.last().pose(), buffer, Font.DisplayMode.NORMAL, bgColor, 15728880);
+        buffer.endBatch();
 
         stack.popPose();
     }
@@ -293,9 +299,10 @@ public class ICRenderTypes {
         }
     }
 
-    public static void registerIcons(AtlasRegistrar registrar) {
-        registrar.registerSprite(new ResourceLocation(MOD_ID, "block/perfboard"), i -> icSurfaceIcon = i);
-        registrar.registerSprite(new ResourceLocation(MOD_ID, "block/perfboard_edge"), i -> icSurfaceBorderIcon = i);
-        registrar.registerSprite(new ResourceLocation(MOD_ID, "block/perfboard_corner"), i -> icSurfaceCornerIcon = i);
+    public static void onTextureStitchEvent(TextureStitchEvent.Post event) {
+        if (!event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) return;
+        icSurfaceIcon = event.getAtlas().getSprite(new ResourceLocation(MOD_ID, "block/perfboard"));
+        icSurfaceBorderIcon = event.getAtlas().getSprite(new ResourceLocation(MOD_ID, "block/perfboard_edge"));
+        icSurfaceCornerIcon = event.getAtlas().getSprite(new ResourceLocation(MOD_ID, "block/perfboard_corner"));
     }
 }

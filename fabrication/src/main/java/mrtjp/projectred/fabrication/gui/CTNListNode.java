@@ -1,13 +1,12 @@
 package mrtjp.projectred.fabrication.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import mrtjp.projectred.fabrication.engine.log.ICCompilerLog.CompileTreeNode;
 import mrtjp.projectred.fabrication.gui.screen.ICWorkbenchCompileTab;
 import mrtjp.projectred.lib.Point;
 import mrtjp.projectred.lib.Rect;
 import mrtjp.projectred.redui.AbstractGuiNode;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 import java.util.LinkedList;
@@ -74,20 +73,20 @@ public class CTNListNode extends AbstractGuiNode {
         }
 
         @Override
-        public void drawBack(PoseStack stack, Point mouse, float partialFrame) {
+        public void drawBack(GuiGraphics graphics, Point mouse, float partialFrame) {
             RenderSystem.setShaderTexture(0, ICWorkbenchCompileTab.TAB_BACKGROUND);
 
-            GuiComponent.blit(stack, getFrame().x(), getFrame().y(), 1, 358, getFrame().width(), getFrame().height(), 512, 512);
+            graphics.blit(ICWorkbenchCompileTab.TAB_BACKGROUND, getFrame().x(), getFrame().y(), 1, 358, getFrame().width(), getFrame().height(), 512, 512);
 
             String s = node.step.toString();
             if (s.length() > 10) {
                 s = s.substring(s.length() - 10);
             }
-            getRoot().getFontRenderer().draw(stack, s, getFrame().x() + 2, getFrame().y() + 2, 0xFFFFFF);
+            graphics.drawString(getRoot().getFontRenderer(), s, getFrame().x() + 2, getFrame().y() + 2, 0xFFFFFF);
         }
 
         @Override
-        public void drawFront(PoseStack stack, Point mouse, float partialFrame) {
+        public void drawFront(GuiGraphics graphics, Point mouse, float partialFrame) {
 
             if (!isFirstHit(mouse)) return;
 
@@ -98,7 +97,7 @@ public class CTNListNode extends AbstractGuiNode {
             toolTip.add(Component.literal("Gates: " + node.gateIds.size()));
             toolTip.add(Component.literal("Remaps: " + node.registerRemaps.size()));
 
-            renderTooltip(stack, mouse, toolTip);
+            renderTooltip(graphics, mouse, toolTip);
         }
 
         @Override

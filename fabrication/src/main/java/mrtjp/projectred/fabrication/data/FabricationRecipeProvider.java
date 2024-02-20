@@ -1,7 +1,7 @@
 package mrtjp.projectred.fabrication.data;
 
 import codechicken.lib.datagen.recipe.RecipeProvider;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -16,8 +16,8 @@ import static mrtjp.projectred.fabrication.init.FabricationItems.*;
 
 public class FabricationRecipeProvider extends RecipeProvider {
 
-    public FabricationRecipeProvider(DataGenerator dataGenerator) {
-        super(dataGenerator);
+    public FabricationRecipeProvider(PackOutput output) {
+        super(output);
     }
 
     @Override

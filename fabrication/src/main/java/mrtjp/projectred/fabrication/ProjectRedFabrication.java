@@ -1,16 +1,17 @@
 package mrtjp.projectred.fabrication;
 
-import codechicken.lib.gui.SimpleCreativeTab;
 import codechicken.multipart.api.MultipartType;
 import mrtjp.projectred.fabrication.data.FabricationBlockStateModelProvider;
 import mrtjp.projectred.fabrication.data.FabricationItemModelProvider;
 import mrtjp.projectred.fabrication.data.FabricationLanguageProvider;
 import mrtjp.projectred.fabrication.data.FabricationRecipeProvider;
 import mrtjp.projectred.fabrication.init.*;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -40,14 +41,14 @@ public class ProjectRedFabrication {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MOD_ID);
     public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MOD_ID);
     public static final DeferredRegister<MultipartType<?>> PARTS = DeferredRegister.create(MultipartType.MULTIPART_TYPES, MOD_ID);
-
-    public static final SimpleCreativeTab FABRICATION_GROUP = new SimpleCreativeTab(MOD_ID, () -> new ItemStack(FabricationBlocks.IC_WORKBENCH_BLOCK.get()));
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID);
 
     static {
         FabricationBlocks.register();
         FabricationMenus.register();
         FabricationItems.register();
         FabricationParts.register();
+        FabricationCreativeModeTab.register();
     }
 
     public ProjectRedFabrication() {
@@ -63,6 +64,7 @@ public class ProjectRedFabrication {
         BLOCK_ENTITY_TYPES.register(modEventBus);
         MENU_TYPES.register(modEventBus);
         PARTS.register(modEventBus);
+        CREATIVE_TABS.register(modEventBus);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -71,12 +73,13 @@ public class ProjectRedFabrication {
 
     private void onGatherDataEvent(final GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
+        PackOutput output = generator.getPackOutput();
         ExistingFileHelper fileHelper = event.getExistingFileHelper();
 
-        generator.addProvider(event.includeClient(), new FabricationBlockStateModelProvider(generator, fileHelper));
-        generator.addProvider(event.includeClient(), new FabricationItemModelProvider(generator, fileHelper));
-        generator.addProvider(event.includeClient(), new FabricationLanguageProvider(generator));
+        generator.addProvider(event.includeClient(), new FabricationBlockStateModelProvider(output, fileHelper));
+        generator.addProvider(event.includeClient(), new FabricationItemModelProvider(output, fileHelper));
+        generator.addProvider(event.includeClient(), new FabricationLanguageProvider(output));
 
-        generator.addProvider(event.includeServer(), new FabricationRecipeProvider(generator));
+        generator.addProvider(event.includeServer(), new FabricationRecipeProvider(output));
     }
 }

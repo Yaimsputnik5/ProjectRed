@@ -1,14 +1,14 @@
 package mrtjp.projectred.core.data;
 
 import codechicken.lib.datagen.LootTableProvider;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 
 import static mrtjp.projectred.core.init.CoreBlocks.ELECTROTINE_GENERATOR_BLOCK;
 
 public class CoreLootTableProvider extends LootTableProvider.BlockLootProvider {
 
-    public CoreLootTableProvider(DataGenerator gen) {
-        super(gen);
+    public CoreLootTableProvider(PackOutput output) {
+        super(output);
     }
 
     @Override

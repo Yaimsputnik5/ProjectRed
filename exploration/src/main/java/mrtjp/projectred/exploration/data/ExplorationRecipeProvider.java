@@ -4,7 +4,7 @@ import codechicken.lib.datagen.recipe.RecipeProvider;
 import codechicken.lib.datagen.recipe.ShapedRecipeBuilder;
 import codechicken.microblock.init.CBMicroblockModContent;
 import mrtjp.projectred.exploration.item.BackpackItem;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -29,8 +29,8 @@ import static mrtjp.projectred.exploration.init.ExplorationTags.*;
 @SuppressWarnings("DataFlowIssue")
 public class ExplorationRecipeProvider extends RecipeProvider {
 
-    public ExplorationRecipeProvider(DataGenerator generatorIn) {
-        super(generatorIn);
+    public ExplorationRecipeProvider(PackOutput output) {
+        super(output);
     }
 
     @Override

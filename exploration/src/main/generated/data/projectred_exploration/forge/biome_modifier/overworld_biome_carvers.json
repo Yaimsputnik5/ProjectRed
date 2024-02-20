@@ -1,0 +1,6 @@
+{
+  "type": "projectred_exploration:add_carver",
+  "biomes": "#minecraft:is_overworld",
+  "carvers": "projectred_exploration:marble_cave",
+  "step": "air"
+}

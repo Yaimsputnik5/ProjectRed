@@ -1,7 +1,6 @@
 package mrtjp.projectred.fabrication.init;
 
 import codechicken.lib.model.ModelRegistryHelper;
-import codechicken.lib.texture.SpriteRegistryHelper;
 import mrtjp.projectred.fabrication.gui.ICRenderTypes;
 import mrtjp.projectred.fabrication.gui.screen.inventory.LithographyTableScreen;
 import mrtjp.projectred.fabrication.gui.screen.inventory.PackagingTableScreen;
@@ -23,13 +22,12 @@ public class FabricationClientInit {
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         modEventBus.addListener(FabricationClientInit::clientSetup);
+
+        // Register sprites
+        modEventBus.addListener(ICRenderTypes::onTextureStitchEvent);
     }
 
     private static void clientSetup(final FMLClientSetupEvent event) {
-
-        // Register sprites
-        SpriteRegistryHelper iconRegister = new SpriteRegistryHelper();
-        iconRegister.addIIconRegister(ICRenderTypes::registerIcons);
 
         // Register models
         ModelRegistryHelper modelRegistryHelper = new ModelRegistryHelper();

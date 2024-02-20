@@ -5,7 +5,6 @@ import codechicken.multipart.api.part.MultiPart;
 import codechicken.multipart.util.MultipartPlaceContext;
 import mrtjp.projectred.core.PlacementLib;
 import mrtjp.projectred.integration.GateType;
-import mrtjp.projectred.integration.ProjectRedIntegration;
 import mrtjp.projectred.integration.part.GatePart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -16,7 +15,7 @@ public class GatePartItem extends ItemMultipart {
     private final GateType gateType;
 
     public GatePartItem(GateType gateType) {
-        super(new Item.Properties().tab(ProjectRedIntegration.CREATIVE_TAB));
+        super(new Item.Properties());
         this.gateType = gateType;
     }
 

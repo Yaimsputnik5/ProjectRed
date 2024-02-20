@@ -2,7 +2,6 @@ package mrtjp.projectred.expansion.init;
 
 import codechicken.lib.model.ModelRegistryHelper;
 import codechicken.lib.render.block.BlockRenderingRegistry;
-import codechicken.lib.texture.SpriteRegistryHelper;
 import codechicken.multipart.api.MultipartClientRegistry;
 import mrtjp.projectred.expansion.MovementManager;
 import mrtjp.projectred.expansion.client.*;
@@ -46,9 +45,8 @@ public class ExpansionClientInit {
         MinecraftForge.EVENT_BUS.addListener(MovementManager::onRenderLevelStage);
 
         // Register sprites
-        SpriteRegistryHelper spriteHelper = new SpriteRegistryHelper(modEventBus);
-        spriteHelper.addIIconRegister(FrameModelRenderer::registerIcons);
-        spriteHelper.addIIconRegister(FrameMotorBlockRenderer::registerIcons);
+        modEventBus.addListener(FrameModelRenderer::onTextureStitchEvent);
+        modEventBus.addListener(FrameMotorBlockRenderer::onTextureStitchEvent);
     }
 
     private static void clientSetup(final FMLClientSetupEvent event) {

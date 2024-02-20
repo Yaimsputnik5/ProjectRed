@@ -1,6 +1,6 @@
 package mrtjp.projectred.expansion.data;
 
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
 
 import static mrtjp.projectred.expansion.ProjectRedExpansion.MOD_ID;
@@ -11,8 +11,8 @@ import static mrtjp.projectred.expansion.init.ExpansionUnlocal.UL_STORED_POWER_T
 
 public class ExpansionLanguageProvider extends LanguageProvider {
 
-    public ExpansionLanguageProvider(DataGenerator gen) {
-        super(gen, MOD_ID, "en_us");
+    public ExpansionLanguageProvider(PackOutput output) {
+        super(output, MOD_ID, "en_us");
     }
 
     @Override

@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,6 +28,8 @@ import java.util.List;
 
 import static mrtjp.projectred.core.ProjectRedCore.MOD_ID;
 import static net.minecraft.client.renderer.RenderStateShard.*;
+import static net.minecraftforge.client.event.RenderLevelStageEvent.Stage.AFTER_LEVEL;
+import static net.minecraftforge.client.event.RenderLevelStageEvent.Stage.AFTER_PARTICLES;
 
 public class HaloRenderer {
 
@@ -116,9 +117,14 @@ public class HaloRenderer {
 
     public static void onRenderWorldStageEvent(final RenderLevelStageEvent event) {
 
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
-            return;
+        if (event.getStage().equals(AFTER_PARTICLES)) {
+            onRenderStageAfterParticles(event);
+        } else if (event.getStage().equals(AFTER_LEVEL)) {
+            onRenderStageAfterLevel(event);
         }
+    }
+
+    private static void onRenderStageAfterParticles(final RenderLevelStageEvent event) {
 
         if (levelLights.isEmpty()) {
             return;
@@ -173,7 +179,7 @@ public class HaloRenderer {
         stack.popPose();
     }
 
-    public static void onRenderWorldLastEvent(final RenderLevelLastEvent event) {
+    private static void onRenderStageAfterLevel(final RenderLevelStageEvent event) {
 
         // Unfabulous rendering. Batched rendering doesn't seem to work from stage events when not
         // on fabulous for some reason, so we have to do it here instead.
