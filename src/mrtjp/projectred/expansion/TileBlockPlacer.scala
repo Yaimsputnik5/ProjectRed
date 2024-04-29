@@ -19,15 +19,14 @@ import codechicken.multipart.IRedstoneConnector
 import com.mojang.authlib.GameProfile
 import mrtjp.core.block.TTileOrient
 import mrtjp.core.gui._
-import mrtjp.core.inventory.{SimpleInventory, TInventory, TInventoryCapablilityTile}
+import mrtjp.core.inventory.{TInventory, TInventoryCapablilityTile}
 import mrtjp.core.vec.Point
 import mrtjp.projectred.ProjectRedExpansion
-import mrtjp.projectred.api.{IFrame, IRelocationAPI}
+import mrtjp.projectred.api.{IFrame, IRelocationAPI, ProjectRedAPI}
 import mrtjp.projectred.expansion.TileBlockPlacer._
 import net.minecraft.client.renderer.texture.{TextureAtlasSprite, TextureMap}
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.{Entity, EntityLivingBase}
-import net.minecraft.inventory.IInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.math.{BlockPos, Vec3d}
@@ -41,7 +40,6 @@ import net.minecraftforge.event.ForgeEventFactory
 import net.minecraftforge.fml.common.eventhandler.Event
 import net.minecraftforge.fml.relauncher.{Side, SideOnly}
 
-import scala.collection.mutable.{Stack => MStack}
 import scala.ref.WeakReference
 
 class TileBlockPlacer extends TileMachine with TActiveDevice with TInventory with TInventoryCapablilityTile with IRedstoneConnector with TNonStickableFrontFace
@@ -74,9 +72,14 @@ class TileBlockPlacer extends TileMachine with TActiveDevice with TInventory wit
 
     override def getName = "block_placer"
 
-    def locateFakePlayer()
+    def reloadPlayer()
     {
+        if (fakePlayer == null)
+            fake = WeakReference(FakePlayerFactory.get(world.asInstanceOf[WorldServer],
+                new GameProfile(UUID.randomUUID(), "[PR_FAKE]")))
+
         val pos = new Vector3(x, y, z).add(positions(side))
+
         val (pitch, yaw) = angles(side)
         fakePlayer.setLocationAndAngles(pos.x, pos.y, pos.z, yaw, pitch)
     }
@@ -102,25 +105,21 @@ class TileBlockPlacer extends TileMachine with TActiveDevice with TInventory wit
     override def onActivate()
     {
         if (world.isRemote) return
-        spawnFakePlayer(world.asInstanceOf[WorldServer])
-
+        reloadPlayer()
         val upos = getPos.offset(EnumFacing.VALUES(side^1))
-
-        pushFakePlayerData()
         copyInvToPlayer()
-        locateFakePlayer()
-
         for (i <- 0 until 9) {
             val stack = getStackInSlot(i)
             if (!stack.isEmpty && tryUseItem(stack, upos, i)) {
                 if (fakePlayer.isHandActive) fakePlayer.stopActiveHand()
                 copyInvFromPlayer()
-                popFakePlayerData()
+//                val newStack = getStackInSlot(i)
+//                if (!newStack.isEmpty)
+//                    setInventorySlotContents(i, ItemStack.EMPTY)
                 return
             }
         }
         copyInvFromPlayer()
-        popFakePlayerData()
     }
 
     def copyInvToPlayer()
@@ -260,10 +259,8 @@ trait TNonStickableFrontFace extends TTileOrient with IFrame
 
 object TileBlockPlacer
 {
-    var fakePlayerWeakRef = WeakReference[EntityPlayer](null)
-    val fakePlayerDataStack = new MStack[(Vector3, Float, Float, IInventory)]()
-
-    def fakePlayer = fakePlayerWeakRef.get.orNull
+    var fake = WeakReference[EntityPlayer](null)
+    def fakePlayer = fake.get.orNull
 
     val angles = Seq(
         (-90F, 0F),
@@ -282,33 +279,6 @@ object TileBlockPlacer
         new Vector3(0.5D+0.52D, -1.12D,       0.5D),
         new Vector3(0.5D-0.52D, -1.12D,       0.5D)
     )
-
-    def spawnFakePlayer(world:WorldServer)
-    {
-        if (fakePlayer == null)
-            fakePlayerWeakRef = WeakReference(FakePlayerFactory.get(world,
-                new GameProfile(UUID.randomUUID(), "[PR_FAKE]")))
-    }
-
-    def pushFakePlayerData()
-    {
-        val size = fakePlayer.inventory.getSizeInventory
-        val inv = new SimpleInventory(size)
-        for (i <- 0 until size)
-            inv.setInventorySlotContents(i, fakePlayer.inventory.getStackInSlot(i))
-        val pos = new Vector3(fakePlayer.posX, fakePlayer.posY, fakePlayer.posZ)
-        val yaw = fakePlayer.rotationYaw
-        val pitch = fakePlayer.rotationPitch
-        fakePlayerDataStack.push((pos, yaw, pitch, inv))
-    }
-
-    def popFakePlayerData()
-    {
-        val (pos, yaw, pitch, inv) = fakePlayerDataStack.pop()
-        for (i <- 0 until inv.getSizeInventory)
-            fakePlayer.inventory.setInventorySlotContents(i, inv.getStackInSlot(i))
-        fakePlayer.setLocationAndAngles(pos.x, pos.y, pos.z, yaw, pitch)
-    }
 }
 
 class ContainerBlockPlacer(p:EntityPlayer, tile:TileBlockPlacer) extends NodeContainer
